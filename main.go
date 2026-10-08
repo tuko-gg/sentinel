@@ -22,7 +22,6 @@ func main() {
 	httpPort := os.Getenv("HTTP_PORT")
 
 	app := gin.Default()
-	//app.GET("/albums", getAlbums)
 
 	router.InitRouter(app)
 
