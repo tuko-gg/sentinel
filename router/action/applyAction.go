@@ -38,14 +38,14 @@ func ApplyActionEndpoint(c *gin.Context) {
 		return
 	}
 
-    action.UserId = label.UserId
+	action.UserId = label.UserId
 	action.CreatedTime = time.Now()
 
 	err := db.GetDb().Create(&action).Error
 	if err != nil {
 		if err == gorm.ErrDuplicatedKey {
 			c.IndentedJSON(http.StatusNotFound, gin.H{
-				"error": "Action already active",
+				"error": "Action already applied",
 			})
 			return
 		}

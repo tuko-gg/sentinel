@@ -2,6 +2,7 @@ package action
 
 import (
 	"net/http"
+	"time"
 	"tuko-gg/sentinel/db"
 
 	"github.com/gin-gonic/gin"
@@ -10,6 +11,11 @@ import (
 type GetActionsForItemsRequestPayload struct {
 	ItemIds           []string
 	SubscribedUserIds []string
+}
+
+type GetActionsForItemsActionItem struct {
+	db.Label
+	AddedTime time.Time
 }
 
 func GetActionsForItems(c *gin.Context) {
@@ -29,15 +35,22 @@ func GetActionsForItems(c *gin.Context) {
 		Find(&actions).Error
 
 	if err != nil {
-        c.IndentedJSON(http.StatusInternalServerError, gin.H{
-            "error": "Failed to retrieve actions",
-        })
-        return
-    }
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{
+			"error": "Failed to retrieve actions",
+		})
+		return
+	}
 
-    actionsByItemId := make(map[string][]db.LabelAction)
-    for _, action := range actions {
-        actionsByItemId[action.ItemId] = append(actionsByItemId[action.ItemId], action)
-    }
+	actionsByItemId := make(map[string][]GetActionsForItemsActionItem)
+	for _, action := range actions {
+
+		actionsByItemId[action.ItemId] = append(
+			actionsByItemId[action.ItemId],
+			GetActionsForItemsActionItem{
+				Label:     action.Label,
+				AddedTime: action.CreatedTime,
+			},
+		)
+	}
 	c.IndentedJSON(http.StatusOK, actionsByItemId)
 }
