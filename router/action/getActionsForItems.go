@@ -43,7 +43,6 @@ func GetActionsForItems(c *gin.Context) {
 
 	actionsByItemId := make(map[string][]GetActionsForItemsActionItem)
 	for _, action := range actions {
-
 		actionsByItemId[action.ItemId] = append(
 			actionsByItemId[action.ItemId],
 			GetActionsForItemsActionItem{
